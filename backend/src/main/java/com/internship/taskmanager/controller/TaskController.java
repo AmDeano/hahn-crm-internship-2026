@@ -1,6 +1,9 @@
 package com.internship.taskmanager.controller;
 
 
+import com.internship.taskmanager.dto.TaskRequest;
+import com.internship.taskmanager.dto.TaskResponse;
+import com.internship.taskmanager.dto.TaskUpdateRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
