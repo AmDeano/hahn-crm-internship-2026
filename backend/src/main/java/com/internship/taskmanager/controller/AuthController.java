@@ -2,6 +2,8 @@ package com.internship.taskmanager.controller;
 
 import com.internship.taskmanager.dto.LoginRequest;
 import com.internship.taskmanager.dto.LoginResponse;
+import com.internship.taskmanager.service.AuthService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,12 +19,8 @@ public class AuthController {
     private  AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request){
-        try{
-            LoginResponse response = authService.login(request);
-            return ResponseEntity.ok(response);
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body("Invalid credentials");
-        }
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+        LoginResponse response = authService.login(request);
+        return ResponseEntity.ok(response);
     }
 }

@@ -1,10 +1,13 @@
 package com.internship.taskmanager.service;
 
 import com.internship.taskmanager.dto.*;
+import com.internship.taskmanager.exception.ResourceNotFoundException;
 import com.internship.taskmanager.model.Project;
 import com.internship.taskmanager.model.User;
 import com.internship.taskmanager.repository.ProjectRepository;
 import com.internship.taskmanager.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +18,8 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class ProjectService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProjectService.class);
 
     @Autowired
     private ProjectRepository projectRepository;
@@ -33,8 +38,9 @@ public class ProjectService {
     public ProjectDetailResponse getProjectById(Long projectId, String email) {
         User user = getUserByEmail(email);
         Project project = projectRepository.findByIdAndUserId(projectId, user.getId())
-                .orElseThrow(() -> new RuntimeException("Project not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Project", "id", projectId));
 
+        logger.debug("Retrieved project {} for user {}", projectId, email);
         return mapToProjectDetailResponse(project);
     }
 
@@ -48,12 +54,13 @@ public class ProjectService {
                 .build();
 
         project = projectRepository.save(project);
+        logger.info("Created project {} for user {}", project.getId(), email);
         return mapToProjectResponse(project);
     }
 
     private User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "email", email));
     }
 
     private ProjectResponse mapToProjectResponse(Project project) {

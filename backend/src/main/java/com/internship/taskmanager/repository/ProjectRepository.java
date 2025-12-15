@@ -9,6 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface ProjectRepository extends JpaRepository<Project,Long> {
-    List<Project> findAllByOrderByCreatedAtDesc(Long userId);
+    List<Project> findByUserIdOrderByCreatedAtDesc(Long userId);
     Optional<Project> findByIdAndUserId(Long id, Long userId);
 }
