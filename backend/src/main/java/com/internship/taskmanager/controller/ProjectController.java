@@ -3,16 +3,15 @@ package com.internship.taskmanager.controller;
 import com.internship.taskmanager.dto.ProjectDetailResponse;
 import com.internship.taskmanager.dto.ProjectRequest;
 import com.internship.taskmanager.dto.ProjectResponse;
+import com.internship.taskmanager.service.ProjectService;
 import jakarta.validation.Valid;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.Authenticator;
-import java.sql.Struct;
 import java.util.List;
 
 @RestController
@@ -25,7 +24,7 @@ public class ProjectController {
     @GetMapping
     public ResponseEntity<List<ProjectResponse>> getUserProjects(Authentication authentication) {
         String email = authentication.getName();
-        List<ProjectResponse> projects = projectService.GetUserProjects(email);
+        List<ProjectResponse> projects = projectService.getUserProjects(email);
         return ResponseEntity.ok(projects);
     }
 

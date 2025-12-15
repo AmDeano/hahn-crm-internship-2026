@@ -17,6 +17,7 @@ public class ProjectDetailResponse {
     private Long id;
     private String title;
     private String description;
+    private LocalDateTime createdAt;
     private LocalDateTime createdDate;
     private Integer totalTasks;
     private Integer completedTasks;
