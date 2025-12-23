@@ -530,18 +530,6 @@ The application comes with pre-configured demo users:
 
 ---
 
-## 📸 Screenshots
-
-### Login Page
-![Login Page](docs/screenshots/login.png)
-
-### Projects Dashboard
-![Dashboard](docs/screenshots/dashboard.png)
-
-### Project Detail with Tasks
-![Project Detail](docs/screenshots/project-detail.png)
-
----
 
 ## 🧪 Testing
 
@@ -685,4 +673,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
-**Made with ❤️ for Hahn Software Morocco Internship 2026**
+**Made with ❤️ for Hahn Software Morocco**
