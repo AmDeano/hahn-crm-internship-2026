@@ -1,0 +1,73 @@
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: taskmanagement-db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-taskmanagement}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Please set POSTGRES_PASSWORD in .env file}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - taskmanagement-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Spring Boot Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: taskmanagement-backend
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-taskmanagement}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Please set POSTGRES_PASSWORD in .env file}
+      JWT_SECRET: ${JWT_SECRET:?Please set JWT_SECRET in .env file}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-604800000}
+      DEMO_USER_EMAIL: ${DEMO_USER_EMAIL:-demo@hahn.com}
+      DEMO_USER_PASSWORD: ${DEMO_USER_PASSWORD:-demo123}
+      DEMO_USER_NAME: ${DEMO_USER_NAME:-Demo User}
+      TEST_USER_EMAIL: ${TEST_USER_EMAIL:-test@hahn.com}
+      TEST_USER_PASSWORD: ${TEST_USER_PASSWORD:-test123}
+      TEST_USER_NAME: ${TEST_USER_NAME:-Test User}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-taskmanagement}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:?Please set POSTGRES_PASSWORD in .env file}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - taskmanagement-network
+    restart: unless-stopped
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: taskmanagement-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - taskmanagement-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  taskmanagement-network:
+    driver: bridge
